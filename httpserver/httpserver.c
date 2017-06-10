@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
+/* 建立监听 */
 int socket_listen(char *ipaddr, int port)
 {
 	int		ret;
@@ -81,6 +82,7 @@ int socket_accept(int sockfd)
 	return 0;
 }
 
+/* 处理网页request与response */
 int http_handle(int c)
 {
 	http_read(c);
@@ -90,6 +92,7 @@ int http_handle(int c)
 	close(c);
 	return 0;
 }
+
 int main()
 {
 	int		sockfd;
