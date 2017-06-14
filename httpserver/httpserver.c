@@ -93,11 +93,17 @@ int http_handle(int c)
 	return 0;
 }
 
-int main()
+int main(int args, char *argv[])
 {
 	int		sockfd;
 	
-	sockfd = socket_listen("192.168.92.130", 8001);
+	if(args != 2)
+	{
+		fprintf(stderr, "Invalid argument\n");
+		return -1;
+	}
+
+	sockfd = socket_listen(argv[1], 8001);
 	if(sockfd == -1)
 	{
 		return -1;

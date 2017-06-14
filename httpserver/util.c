@@ -15,3 +15,23 @@ int get_datetime(char *gmtTime)
 	return 0;
 }
 
+int read_filedata(char *fileName, char *buffer)
+{
+	FILE	*fp = NULL;
+
+	fp = fopen(fileName, "r");
+	if(fp == NULL)
+	{
+		fprintf(stderr, "fail to open %s\n", fileName);
+		return -1;
+	}
+
+	fseek(fp, 0, SEEK_SET);
+
+	int len = ftell(fp);
+	
+	fread(fp, buffer, len);
+
+	return 0;
+}
+
