@@ -3,12 +3,12 @@ CFLAG=-g
 
 TARGET=httpserver
 
-OBJ=httpserver.o request.o response.o
+OBJ=httpserver.o request.o response.o session.o util/util.o
 
 all:$(TARGET)
 
 %.o:%.c
-	$(CC) $(CFLAG) -c $<
+	$(CC) $(CFLAG) -c $< -o $@
 
 httpserver:$(OBJ)
 	$(CC) $(CFLAG) -o $@ $(OBJ)

@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include "session.h"
 
 /* 建立监听 */
 int socket_listen(char *ipaddr, int port)
@@ -17,7 +18,6 @@ int socket_listen(char *ipaddr, int port)
 #if 0
 	int		port;
 	char	ipaddr[20] = {'\0'};
-
 
 	ret = sscanf(addr, "[^:]:%d", ipaddr, &port);
 #endif
@@ -65,7 +65,8 @@ int socket_accept(int sockfd)
 	int		ret, c;
 	struct  sockaddr_in  client;
 	socklen_t	clitlen;
-	
+	ClientSession	*session = NULL;
+
 	while(1)
 	{
 		clitlen = sizeof(client);
@@ -75,21 +76,24 @@ int socket_accept(int sockfd)
 			printf("accpet error:%d,%s\n", ret, strerror(errno));
 			return -1;
 		}
+		
+		session = http_create_session(c);
 
-		http_handle(c);
+		http_handle_session(session);
 	}
 
 	return 0;
 }
 
 /* 处理网页request与response */
-int http_handle(int c)
+int http_handle_session(ClientSession *session)
 {
-	http_read(c);
-	http_write(c);
+	http_request(session);
+
+	http_response(session);
 	
 	sleep(1);
-	close(c);
+	http_close_session(&session);
 	return 0;
 }
 

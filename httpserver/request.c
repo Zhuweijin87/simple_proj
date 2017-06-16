@@ -1,81 +1,64 @@
 #include <stdio.h>
 #include <string.h>
+#include "session.h"
 
-int http_read(int c)
+int http_request(ClientSession *session)
 {
 	int		ret;
 	int		len;
 	char	buffer[1024] = {'\0'};
 
-	len = read(c, buffer, 1203);
+	memset(session->readbuf, 0, 2048);
+	len = read(session->fd, session->readbuf, 1203);
 	if(len < 0)
 	{
-		close(c);
 		return -1;
 	}
 	else if(len == 0)
 	{
 		printf("client close\n");
-		close(c);
+		session->state = 1;
+		return 1;
 	}
 	else
 	{
-		fprintf(stderr, "READ:\n%s\n", buffer);
+		fprintf(stderr, "READ:\n%s\n", session->readbuf);
 	}
 
-	if(strncmp(buffer, "GET", 3) == 0)
+	if(strncmp(session->readbuf, "GET", 3) == 0)
 	{
-		http_get(c, buffer);
+		http_request_get(session);
 	}
 
-	if(strncmp(buffer, "POST", 4) == 0)
+	if(strncmp(session->readbuf, "POST", 4) == 0)
 	{
-		http_post(c, buffer);
+		http_request_post(session);
 	}
 
 	return 0;
 }
 
 /* 处理GET请求 */
-int http_get(int c, char *buffer)
+int http_request_get(ClientSession *session)
 {
-	char	getdata[256] = {'\0'};
-	char	*p = buffer;
-	int		tag = 0, i=0;	
-	for( ; *p != '\n'; *p++)
+	int		i = 0, j=0;
+	char	getdata[101] = {'\0'};
+	i = 4;
+	while(session->readbuf[i] != 0x20)
 	{
-		if(*p == '/')
-		{
-			tag = 1;
-			continue;
-		}
+		getdata[j++] = session->readbuf[i++];
+	}
 	
-		if(tag == 1 && *p == ' ')
-		{
-			tag = 0;
-			break;
-		}
+	printf("GetData: %s\n", getdata);
 
-		if(tag == 1)
-			getdata[i++] = *p;		
-	}
-
-	printf("getdata: %s\n", getdata);
-	
-	if(getdata[0] == '?')
-	{		
-		;
-	}
-	else
-	{
-		;	
-	}
+	if(strcmp(&getdata[1], "favicon.ico") == 0)
+		session->state = 2;
 
 	return 0;
 }
 
 /* 处理POST请求 */
-int http_post(int c, char *buffer)
+int http_request_post(ClientSession *session)
 {
 	return 0;
 }
