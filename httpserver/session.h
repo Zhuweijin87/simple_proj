@@ -11,5 +11,9 @@ typedef struct client_session_s
 	char	writebuf[2048];
 } ClientSession;
 
+ClientSession *http_create_session(int fd);
+
+void http_destroy_session(ClientSession **session);
+
 #endif
 

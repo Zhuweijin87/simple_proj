@@ -26,7 +26,7 @@ int http_response(ClientSession *session)
 	strcat(buffer, "Content-Type: text/html; charset=UTF-8\r\n");
 	strcat(buffer, "\r\n");
 		
-	read_filedata("html/login.html", &buffer[strlen(buffer)]);
+	read_filedata("html/test.html", &buffer[strlen(buffer)]);
 
 	printf("buffer:\n%s\n", buffer);
 
