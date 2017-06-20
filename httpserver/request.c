@@ -24,9 +24,7 @@ int http_request(HttpSession *session)
 		return 1;
 	}
 
-#ifdef DEBUG
 	printf("Request:\n%s\n", buffer);
-#endif
 
 	request = &session->request;
 	offset = 0;

@@ -1,3 +1,6 @@
+/***********************************
+ *  HTTP 服务
+ **********************************/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,6 +11,9 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include "session.h"
+
+#define DEFAULT_HOST	"192.168.1.46"
+#define DEFAULT_PORT	8001
 
 /* 建立监听 */
 int socket_listen(char *ipaddr, int port)
@@ -99,14 +105,17 @@ int http_handle_session(int clifd)
 int main(int args, char *argv[])
 {
 	int		sockfd;
-	
-	if(args != 2)
+	char	*host = DEFAULT_HOST;
+	int		port = DEFAULT_PORT;
+	char	ch;
+
+	if(args != 2 && args != 3)
 	{
-		fprintf(stderr, "Invalid argument\n");
+		fprintf(stderr, "Invalid argument: httpserver host [port]\n");
 		return -1;
 	}
 
-	sockfd = socket_listen(argv[1], 8001);
+	sockfd = socket_listen(host, port);
 	if(sockfd == -1)
 	{
 		return -1;

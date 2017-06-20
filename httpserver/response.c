@@ -30,7 +30,8 @@ int http_response(HttpSession *session)
 	strcat(buffer, "HTTP/1.1 200 OK\r\n");
 	
 	strcat(buffer, "Date: Fri, 10 June 2017 06:07:21 GMT\r\n");
-	strcat(buffer, "Content-Type: text/html; charset=UTF-8\r\n");
+	//strcat(buffer, "Content-Type: text/html; charset=UTF-8\r\n"); //HTML文件
+	strcat(buffer, "Content-Type: text/plain\r\n"); //纯文本
 	strcat(buffer, "\r\n"); /* 这个必须加，表明后面是网页内容 */
 		
 	read_filedata("html/test.html", &buffer[strlen(buffer)]);
