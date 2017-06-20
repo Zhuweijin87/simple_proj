@@ -65,7 +65,6 @@ int socket_accept(int sockfd)
 	int		ret, c;
 	struct  sockaddr_in  client;
 	socklen_t	clitlen;
-	ClientSession	*session = NULL;
 
 	while(1)
 	{
@@ -76,24 +75,24 @@ int socket_accept(int sockfd)
 			printf("accpet error:%d,%s\n", ret, strerror(errno));
 			return -1;
 		}
-		
-		session = http_create_session(c);
 
-		http_handle_session(session);
+		http_handle_session(c);
 	}
 
 	return 0;
 }
 
 /* 处理网页request与response */
-int http_handle_session(ClientSession *session)
+int http_handle_session(int clifd)
 {
+	HttpSession *session = HttpSession_New(clifd);
+
 	http_request(session);
 
 	http_response(session);
 	
 	sleep(1);
-	http_close_session(&session);
+	HttpSession_Destroy(&session);
 	return 0;
 }
 

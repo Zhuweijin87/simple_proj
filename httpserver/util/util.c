@@ -38,3 +38,13 @@ int read_filedata(char *fileName, char *buffer)
 	return 0;
 }
 
+int read_by_delim(char *buffer, char ch, int *offset, char *out)
+{
+	int i = *offset;
+	for( ; buffer[i] != ch; i++)
+	{
+		*out++ = buffer[i];
+	}
+	*offset = i+1;
+	return 0;
+}

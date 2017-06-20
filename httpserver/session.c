@@ -3,15 +3,19 @@
 #include <string.h>
 #include <stdlib.h>
 
-ClientSession *http_create_session(int clientfd)
+HttpSession *HttpSession_New(int clientfd)
 {
-	ClientSession *session = malloc(sizeof(ClientSession));
+	HttpSession *session = malloc(sizeof(HttpSession));
 	session->fd = clientfd;
 	session->state = 0;
+
+	memset(&session->request, 0, sizeof(HttpRequest));
+	memset(&session->response, 0, sizeof(HttpResponse));
+
 	return session;
 }
 
-void http_close_session(ClientSession **session)
+void HttpSession_Destroy(HttpSession **session)
 {
 	close((*session)->fd);
 	free(*session);
