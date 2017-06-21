@@ -29,10 +29,10 @@ int http_request(HttpSession *session)
 	request = &session->request;
 	offset = 0;
 	read_by_delim(buffer, ' ', &offset, request->method);	
-	read_by_delim(buffer, ' ', &offset, request->params);
+	read_by_delim(buffer, ' ', &offset, request->url);
 	read_by_delim(buffer, '\r', &offset, request->version);
 
-	printf("http: %s,%s,%s\n", request->method, request->params, request->version);	
+	printf("http: %s,%s,%s\n", request->method, request->url, request->version);	
 	if(strncmp(request->method, "GET", 3) == 0)
 		http_request_get(session);
 	else if(strncmp(request->method, "POST", 4) == 0)
@@ -44,19 +44,15 @@ int http_request(HttpSession *session)
 /* 处理GET请求 */
 int http_request_get(HttpSession *session)
 {
-	int		i;
+	int		i, offset;
 	HttpRequest	*request = &session->request;
 
-	if(request->params[0] == '/')
-	{
-		printf("params: %s\n", request->params);	
-	}
-	else
-	{
-		printf("");
-	}
-
-	if(strcmp(session->request.params, "/favicon.ico") == 0)
+	offset = 0;
+	if(offset = getpos_by_delim(request->url, "?"))
+	
+	read_by_delim(request->url, '?', &offset, request->vdir);
+	
+	if(strcmp(request->url, "/favicon.ico") == 0)
 	{
 		session->state = 2;
 	}

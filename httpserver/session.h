@@ -3,15 +3,18 @@
 
 typedef struct http_request_s
 {
-    char    method[7];
-    char    params[1024];
-    char    version[10];
+    char    method[7];		/* HTTP 方法 */
+    char    url[1024];		/* 所有GET URL */
+    char    version[10];	/* 版本 */
+	char	vdir[32];		/* 虚拟目录文件部分 */
+	char	params[200];	/* 参数部分*/
 } HttpRequest;
 
 typedef struct http_response_s
 {
-	char	respcode[5];
-	char	date[50];
+	char	respcode[5];	/* 返回码 */
+	char	respText[33];
+	char	date[50];		/* 日期 */
     char    html[2048];
 } HttpResponse;
 
