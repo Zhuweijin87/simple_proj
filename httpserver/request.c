@@ -48,10 +48,10 @@ int http_request_get(HttpSession *session)
 	HttpRequest	*request = &session->request;
 
 	offset = 0;
-	if(offset = getpos_by_delim(request->url, "?"))
+	if(getpos_by_delim(request->url, "?") > 0)
+		read_by_delim(request->url, '?', &offset, request->vdir);
 	
-	read_by_delim(request->url, '?', &offset, request->vdir);
-	
+		
 	if(strcmp(request->url, "/favicon.ico") == 0)
 	{
 		session->state = 2;
