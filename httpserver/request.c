@@ -26,45 +26,51 @@ int http_request(HttpSession *session)
 
 	printf("Request:\n%s\n", buffer);
 
-	request = &session->request;
-	offset = 0;
-	read_by_delim(buffer, ' ', &offset, request->method);	
-	read_by_delim(buffer, ' ', &offset, request->url);
-	read_by_delim(buffer, '\r', &offset, request->version);
-
-	printf("http: %s,%s,%s\n", request->method, request->url, request->version);	
-	if(strncmp(request->method, "GET", 3) == 0)
-		http_request_get(session);
-	else if(strncmp(request->method, "POST", 4) == 0)
-		http_request_post(session);
+	http_parser(session->request, buffer);
 	
+	if(strcmp(session->request->method, "GET") == 0)
+		http_request_get(session);
+	else if(strcmp(session->request->method, "POST") == 0)
+		http_request_post(session);
+	else
+		;
+
 	return 0;
 }
 
 /* http request数据解析 */
-int http_request_parser(HttpRequest *request, char *buffer)
+int http_parser(HttpRequest *request, char *recvbuf)
 {
-	int		offset = 0;
-	
+	int			offset = 0, charpos = 0;
+	char		line[256] = {'\0'};
+
 	request->params = hashtbl_new();
 
-	read_by_delim(buffer, ' ', &offset, request->method);
-	read_by_delim(buffer, ' ', &offset, request->url);
-	read_by_delim(buffer, '\r', &offset, request->version);
-	
-	
+	buffer_get_line(recvbuf, &linepos, line);
+
+	buffer_by_delim(line, ' ', &charpos, request->method);
+	buffer_by_delim(line, ' ', &charpos, request->url);
+	buffer_by_delim(line, '\r', &charpos, request->version);
+
+	while( buffer_get_line(recvbuf, &linepos, line) != EMPTY_LINE)
+	{
+		charpos = 0;
+		buffer_by_delim_with_ltrim(line, ':', &charpos, key);
+		buffer_by_delim_with_ltrim(line, '\0', &charpos, val);
+		hash_setstring(request->params, key, val);
+	}
+
+		
+	return 0;
 }
 
 /* 处理GET请求 */
 int http_request_get(HttpSession *session)
 {
 	int		i, offset;
+
 	HttpRequest	*request = &session->request;
 
-	offset = 0;
-	if(getpos_by_delim(request->url, "?") > 0)
-		read_by_delim(request->url, '?', &offset, request->vdir);
-	
 		
 	if(strcmp(request->url, "/favicon.ico") == 0)
 	{

@@ -1,23 +1,34 @@
+/* 数据流处理 */
+#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
-BufferHandle *BufferHandle_New(const char *buffer)
+void buffer_init(buffer_t *buffer, char *data)
 {
-	BufferHandle *handle = malloc(sizeof(BufferHandle));
-	handle->offset = 0;
-	handle->buffer = strdup(buffer);
+	buffer->offset = 0;
+	buffer->data = data;
+}
 
-	return handle;
-} 
-
-int get_buffer_by_delim(BufferHandle *handle, char ch, char *out)
+void buffer_reset(buffer_t *buffer)
 {
-	int  i = handle->offset;
-	for(; handle->buffer[i] != ch; i++)
+	buffer->offset = 0;
+}
+
+int buffer_get_line(buffer_t *buffer, char *line)
+{
+	char *ptr = buffer->data + buffer->offset;
+	while(*ptr != '\n')
 	{
-		*out++ = handle->buffer[i];
+		if(*ptr == '\r')
+			*ptr++;
+		if(*ptr == '\0' || *ptr == '\n')
+			break;
+		*line++ = *ptr++;
 	}
-	handle->offset = i;
 	return 0;
+}
+
+int buffer_by_delim(char *line, char ch)
+{
+
 }
 

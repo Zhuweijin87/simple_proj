@@ -59,3 +59,10 @@ int getpos_by_delim(char *buffer, char ch)
 
 	return pos;
 }
+
+int get_buffer_line(char *buffer, char *line)
+{
+	int	pos;
+	
+}
+

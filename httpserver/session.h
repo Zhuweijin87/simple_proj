@@ -23,8 +23,8 @@ typedef struct http_session_s
 {
 	int				fd;
 	int				state;
-	HttpRequest		request;
-	HttpResponse	response;
+	HttpRequest		*request;
+	HttpResponse	*response;
 } HttpSession;
 
 HttpSession *HttpSession_New(int fd);

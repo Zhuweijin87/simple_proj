@@ -9,15 +9,18 @@ HttpSession *HttpSession_New(int clientfd)
 	session->fd = clientfd;
 	session->state = 0;
 
-	memset(&session->request, 0, sizeof(HttpRequest));
-	memset(&session->response, 0, sizeof(HttpResponse));
+	session->request = calloc(1, sizeof(HttpRequest));
+	session->response = calloc(1, sizeof(HttpResponse));
 
 	return session;
 }
 
 void HttpSession_Destroy(HttpSession **session)
 {
-	close((*session)->fd);
-	free(*session);
+	HttpSession *http = *session;
+	close(http->fd);
+	free(http->request);
+	free(http->response);
+	free(http);
 	*session = NULL;
 }
