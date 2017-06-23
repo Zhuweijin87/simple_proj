@@ -41,6 +41,20 @@ int http_request(HttpSession *session)
 	return 0;
 }
 
+/* http request数据解析 */
+int http_request_parser(HttpRequest *request, char *buffer)
+{
+	int		offset = 0;
+	
+	request->params = hashtbl_new();
+
+	read_by_delim(buffer, ' ', &offset, request->method);
+	read_by_delim(buffer, ' ', &offset, request->url);
+	read_by_delim(buffer, '\r', &offset, request->version);
+	
+	
+}
+
 /* 处理GET请求 */
 int http_request_get(HttpSession *session)
 {
