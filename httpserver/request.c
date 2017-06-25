@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "session.h"
+#include "util/buffer.h"
 
 int http_request(HttpSession *session)
 {
@@ -41,26 +42,33 @@ int http_request(HttpSession *session)
 /* http request数据解析 */
 int http_parser(HttpRequest *request, char *recvbuf)
 {
-	int			offset = 0, charpos = 0;
+	int			lineset = 0, charset = 0;
 	char		line[256] = {'\0'};
+	char		key[33] = {'\0'}, val[256] = {'\0'};
 
-	request->params = hashtbl_new();
+	printf("parser begin\n");
+	buffer_get_line(recvbuf, &lineset, line);
+	printf("line: %s\n", line);
+	buffer_by_delim(line, ' ', &charset, request->method);
+	buffer_by_delim(line, ' ', &charset, request->url);
+	buffer_by_delim(line, '\0', &charset, request->version);
 
-	buffer_get_line(recvbuf, &linepos, line);
-
-	buffer_by_delim(line, ' ', &charpos, request->method);
-	buffer_by_delim(line, ' ', &charpos, request->url);
-	buffer_by_delim(line, '\r', &charpos, request->version);
-
-	while( buffer_get_line(recvbuf, &linepos, line) != EMPTY_LINE)
+	printf("%s,%s,%s\n", request->method, request->url, request->version);
+	memset(line, 0, sizeof(line));
+	while( buffer_get_line(recvbuf, &lineset, line) != EMPTY_LINE)
 	{
-		charpos = 0;
-		buffer_by_delim_with_ltrim(line, ':', &charpos, key);
-		buffer_by_delim_with_ltrim(line, '\0', &charpos, val);
-		hash_setstring(request->params, key, val);
+		charset = 0;
+		printf("line: %s\n", line);
+		buffer_by_delim_with_ltrim(line, ':', &charset, key);
+		buffer_by_delim_with_ltrim(line, '\0', &charset, val);
+		printf("key:%s, val: %s\n", key, val);
+		//hash_setstring(request->headers, key, val);
+		memset(line, 0, sizeof(line));
 	}
 
 		
+	request->params = hashtbl_new();
+
 	return 0;
 }
 
@@ -69,7 +77,7 @@ int http_request_get(HttpSession *session)
 {
 	int		i, offset;
 
-	HttpRequest	*request = &session->request;
+	HttpRequest	*request = session->request;
 
 		
 	if(strcmp(request->url, "/favicon.ico") == 0)

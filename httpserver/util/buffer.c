@@ -1,34 +1,52 @@
 /* 数据流处理 */
 #include <stdio.h>
 #include <string.h>
+#include "buffer.h"
 
-void buffer_init(buffer_t *buffer, char *data)
+int buffer_get_line(char *buffer, int *offset, char *line)
 {
-	buffer->offset = 0;
-	buffer->data = data;
-}
-
-void buffer_reset(buffer_t *buffer)
-{
-	buffer->offset = 0;
-}
-
-int buffer_get_line(buffer_t *buffer, char *line)
-{
-	char *ptr = buffer->data + buffer->offset;
-	while(*ptr != '\n')
+	int i = *offset;
+	for( ; buffer[i] != '\n'; i++)
 	{
-		if(*ptr == '\r')
-			*ptr++;
-		if(*ptr == '\0' || *ptr == '\n')
+		if(buffer[i] == '\r')
+			continue;
+		if(buffer[i] == '\0')
 			break;
-		*line++ = *ptr++;
+		*line++ = buffer[i];
 	}
-	return 0;
+
+	*offset = i;
+
+	if(strlen(buffer) == 0)
+		return EMPTY_LINE;
+	return OK;
 }
 
-int buffer_by_delim(char *line, char ch)
+int buffer_by_delim(char *line, int *offset, char ch, char *out)
 {
-
+	int  i = *offset;
+	for(; line[i] != ch; i++)
+	{
+		if(line[i] == '\0')
+			break;
+		*out++ = line[i];
+	}
+	*offset = i;
+	return OK;
 }
+
+int buffer_by_delim_with_ltrim(char *line, int *offset, char ch, char *out)
+{
+	int	start = 0;
+	int i = *offset;
+	for(; line[i] != ch; i++)
+	{
+		if(start == 0 && line[i] != 0x20)
+			start = 1;
+		*out++ = line[i];
+	}
+	*offset = i;
+	return OK;
+}
+
 

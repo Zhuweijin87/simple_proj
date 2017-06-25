@@ -15,5 +15,7 @@ typedef struct hashtable_s
 	hashnode_t  *tables[HASH_CAPACITY];
 } hashtbl_t;
 
+hashtbl_t *hashtbl_new();
+
 #endif
 

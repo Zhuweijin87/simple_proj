@@ -1,10 +1,13 @@
 /***********************************
  * HASH 容器
  **********************************/
+#include <string.h>
+#include <stdlib.h>
+#include "hashtbl.h"
 
 static int hashcode(char *str, int size)
 {
-
+	return 0;
 }
 
 static void *strmemdup(void *val, size_t size)
@@ -46,10 +49,10 @@ hashtbl_t *hashtbl_new()
 	return htbl;	
 }
 
-static int hash_set_node(hashtbl *htbl, char *key, void *val, size_t size)
+static int hash_set_node(hashtbl_t *htbl, char *key, void *val, size_t size)
 {
 	int			hkey = 0;
-	hashnode_t *node = NULL;
+	hashnode_t *node = NULL, *temp = NULL;
 
 	node = hashnode_get(htbl, key);
 	if(node)
@@ -58,11 +61,11 @@ static int hash_set_node(hashtbl *htbl, char *key, void *val, size_t size)
 	}
 
 	hkey = hashcode(key, strlen(key));
-	node = hash_node_create(key, val, size);
+	node = hashnode_create(key, val, size);
 	if(node == NULL)
 		return -1;
 
-	temp = htbl->tables[hkey % HASH_CAPACITY]
+	temp = htbl->tables[hkey % HASH_CAPACITY];
 	while(temp)
 	{
 		if(temp->next == NULL)
@@ -70,7 +73,7 @@ static int hash_set_node(hashtbl *htbl, char *key, void *val, size_t size)
 			temp->next = node;
 			break;
 		}
-		temp = temp->next
+		temp = temp->next;
 	}
 	
 	return 0;

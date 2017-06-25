@@ -38,31 +38,3 @@ int read_filedata(char *fileName, char *buffer)
 	return 0;
 }
 
-int read_by_delim(char *buffer, char ch, int *offset, char *out)
-{
-	int i = *offset;
-	for( ; buffer[i] != ch && buffer[i] != '\0'; i++)
-	{
-		*out++ = buffer[i];
-	}
-	*offset = i+1;
-	return 0;
-}
-
-int getpos_by_delim(char *buffer, char ch)
-{
-	int pos = 0;
-	for( ; buffer[pos] != ch && buffer[pos] != '\0'; pos++)
-	{
-		;
-	}
-
-	return pos;
-}
-
-int get_buffer_line(char *buffer, char *line)
-{
-	int	pos;
-	
-}
-

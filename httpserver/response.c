@@ -24,7 +24,7 @@ int http_response(HttpSession *session)
 		return 0;
 	}
 
-	response = &session->response;	
+	response = session->response;	
 	get_datetime(response->date);
 
 	strcat(buffer, "HTTP/1.1 200 OK\r\n");

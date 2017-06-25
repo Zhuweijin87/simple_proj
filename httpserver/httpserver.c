@@ -21,12 +21,7 @@ int socket_listen(char *ipaddr, int port)
 	int		ret;
 	int		sockfd;
 	struct  sockaddr_in	server;
-#if 0
-	int		port;
-	char	ipaddr[20] = {'\0'};
-
-	ret = sscanf(addr, "[^:]:%d", ipaddr, &port);
-#endif
+	
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(sockfd == -1)
 	{
@@ -66,6 +61,7 @@ int socket_listen(char *ipaddr, int port)
 	return sockfd;
 }
 
+/* 接受连接 */
 int socket_accept(int sockfd)
 {
 	int		ret, c;
@@ -114,6 +110,9 @@ int main(int args, char *argv[])
 		fprintf(stderr, "Invalid argument: httpserver host [port]\n");
 		return -1;
 	}
+
+	if(args == 2)
+		host = argv[1];
 
 	sockfd = socket_listen(host, port);
 	if(sockfd == -1)
