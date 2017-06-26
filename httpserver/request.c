@@ -42,30 +42,31 @@ int http_request(HttpSession *session)
 /* http request数据解析 */
 int http_parser(HttpRequest *request, char *recvbuf)
 {
-	int			lineset = 0, charset = 0;
+	int			lineset = 0, chset = 0;
 	char		line[256] = {'\0'};
 	char		key[33] = {'\0'}, val[256] = {'\0'};
 
 	printf("parser begin\n");
 	buffer_get_line(recvbuf, &lineset, line);
 	printf("line: %s\n", line);
-	buffer_by_delim(line, ' ', &charset, request->method);
-	buffer_by_delim(line, ' ', &charset, request->url);
-	buffer_by_delim(line, '\0', &charset, request->version);
+	buffer_by_delim(line, &chset, ' ', request->method);
+	buffer_by_delim(line, &chset, '?', request->url);
+	buffer_by_delim(line, &chset, ' ', request->indata);
+	buffer_by_delim(line, &chset, '\0', request->version);
 
 	printf("%s,%s,%s\n", request->method, request->url, request->version);
 	memset(line, 0, sizeof(line));
 	while( buffer_get_line(recvbuf, &lineset, line) != EMPTY_LINE)
 	{
-		charset = 0;
-		printf("line: %s\n", line);
-		buffer_by_delim_with_ltrim(line, ':', &charset, key);
-		buffer_by_delim_with_ltrim(line, '\0', &charset, val);
+		chset = 0;
+		memset(key, 0, sizeof(key));
+		memset(val, 0, sizeof(val));
+		buffer_by_delim(line, &chset, ':', key);
+		buffer_by_delim(line, &chset, '\0', val);
 		printf("key:%s, val: %s\n", key, val);
-		//hash_setstring(request->headers, key, val);
+		//hash_setstring(request->headers, key, val, 256);
 		memset(line, 0, sizeof(line));
 	}
-
 		
 	request->params = hashtbl_new();
 

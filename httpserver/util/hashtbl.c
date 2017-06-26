@@ -2,12 +2,27 @@
  * HASH 容器
  **********************************/
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "hashtbl.h"
 
 static int hashcode(char *str, int size)
 {
-	return 0;
+	unsigned int hash = 5381;
+	unsigned int i    = 0;
+
+	for(i = 0; i < size; str++, i++)
+	{
+		hash = ((hash << 5) + hash) + (*str);
+	}
+
+	return hash;
+}
+
+static int hash_index(char *str, int size, int capacity)
+{
+	int 	hashval = hashcode(str, strlen(str));
+	return hashval % capacity;
 }
 
 static void *strmemdup(void *val, size_t size)
@@ -27,61 +42,68 @@ static hashnode_t *hashnode_create(char *key, void *val, size_t size)
 	return node;
 }
 
+hashtbl_t *hashtbl_new()
+{
+	int i;
+	hashtbl_t *htbl = malloc(sizeof(hashtbl_t));
+	for(i=0; i<HASH_CAPACITY; i++)
+		htbl->tables[i] = NULL;
+	return htbl;	
+}
+
 static hashnode_t *hashnode_get(hashtbl_t *htbl, char *key)
 {
-	int 		hkey = 0;
+	int 		index = 0;
 	hashnode_t	*temp = NULL;
 
-	hkey = hashcode(key, strlen(key));
-	temp = htbl->tables[hkey % HASH_CAPACITY];
+	index = hash_index(key, strlen(key), HASH_CAPACITY);
+	temp = htbl->tables[index];
 	while(temp != NULL)
 	{
 		if(strcmp(temp->key, key) == 0)
+		{
 			return temp;
+		}
 		temp = temp->next;
-	}	
+	}
+	
 	return NULL;
-}
-
-hashtbl_t *hashtbl_new()
-{
-	hashtbl_t *htbl = malloc(sizeof(hashtbl_t));
-	return htbl;	
 }
 
 static int hash_set_node(hashtbl_t *htbl, char *key, void *val, size_t size)
 {
-	int			hkey = 0;
+	int			hindex = 0;
 	hashnode_t *node = NULL, *temp = NULL;
 
 	node = hashnode_get(htbl, key);
 	if(node)
 	{
+		printf("%s does exist\n", key);
 		return 1;
 	}
 
-	hkey = hashcode(key, strlen(key));
+	hindex = hash_index(key, strlen(key), HASH_CAPACITY);
 	node = hashnode_create(key, val, size);
 	if(node == NULL)
 		return -1;
 
-	temp = htbl->tables[hkey % HASH_CAPACITY];
-	while(temp)
+	if(htbl->tables[hindex] == NULL)
 	{
-		if(temp->next == NULL)
-		{
-			temp->next = node;
-			break;
-		}
-		temp = temp->next;
+		htbl->tables[hindex] = node;
+	}
+	else
+	{
+		node->next = htbl->tables[hindex];
+		htbl->tables[hindex] = node;
 	}
 	
+	printf("key: %s, val: %s\n", htbl->tables[hindex]->key, htbl->tables[hindex]->val);
+
 	return 0;
 }
 
 static int hash_get_node(hashtbl_t *htbl, char *key, void *val, size_t size)
 {
-	int         hkey = 0;
     hashnode_t *node = NULL;
 
 	node = hashnode_get(htbl, key);

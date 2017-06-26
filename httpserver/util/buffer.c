@@ -5,6 +5,7 @@
 
 int buffer_get_line(char *buffer, int *offset, char *line)
 {
+	int j = 0;
 	int i = *offset;
 	for( ; buffer[i] != '\n'; i++)
 	{
@@ -12,12 +13,12 @@ int buffer_get_line(char *buffer, int *offset, char *line)
 			continue;
 		if(buffer[i] == '\0')
 			break;
-		*line++ = buffer[i];
+		line[j++] = buffer[i];
 	}
 
-	*offset = i;
+	*offset = i+1;
 
-	if(strlen(buffer) == 0)
+	if(j == 0)
 		return EMPTY_LINE;
 	return OK;
 }
@@ -27,11 +28,11 @@ int buffer_by_delim(char *line, int *offset, char ch, char *out)
 	int  i = *offset;
 	for(; line[i] != ch; i++)
 	{
-		if(line[i] == '\0')
+		if(line[i] == '\0' || line[i] == ' ')
 			break;
 		*out++ = line[i];
 	}
-	*offset = i;
+	*offset = i+1;
 	return OK;
 }
 

@@ -8,6 +8,7 @@ typedef struct http_request_s
     char    	method[7];		/* HTTP 方法 */
     char    	url[1024];		/* 所有GET URL */
     char    	version[10];	/* 版本 */
+	char		indata[256];
 	char		vdir[32];		/* 虚拟目录文件部分 */
 	hashtbl_t	*headers;		/* 请求头部 */
 	hashtbl_t	*params;		/* 请求数据 */
