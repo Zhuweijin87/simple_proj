@@ -1,0 +1,4 @@
+{
+	"/": "login.html",
+	"/checkLogin.do", "result.html"
+}

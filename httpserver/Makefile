@@ -3,7 +3,7 @@ CFLAG=-g
 
 TARGET=httpserver
 
-OBJ=httpserver.o request.o response.o session.o util/util.o util/hashtbl.o util/buffer.o
+OBJ=http_server.o http_request.o http_response.o session.o util/util.o util/hashtbl.o util/buffer.o
 
 all:$(TARGET)
 

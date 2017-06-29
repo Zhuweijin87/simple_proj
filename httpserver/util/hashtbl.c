@@ -97,7 +97,7 @@ static int hash_set_node(hashtbl_t *htbl, char *key, void *val, size_t size)
 		htbl->tables[hindex] = node;
 	}
 	
-	printf("key: %s, val: %s\n", htbl->tables[hindex]->key, htbl->tables[hindex]->val);
+	//printf("key: %s, val: %s\n", htbl->tables[hindex]->key, htbl->tables[hindex]->val);
 
 	return 0;
 }
