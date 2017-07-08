@@ -3,7 +3,7 @@
 
 typedef struct config_s 
 {
-	
+	hashtbl_t	*route;	
 } Config_t;
 
 #endif

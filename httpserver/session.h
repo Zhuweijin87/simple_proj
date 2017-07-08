@@ -6,7 +6,6 @@
 typedef struct http_request_s
 {
     char    	method[7];			/* HTTP 方法 */
-    char    	reqParams[1024];	/* 所有GET URL */
     char    	version[10];		/* 版本 */
 	char		tempDir[32];		/* 虚拟目录文件部分 */
 	char		href[100];
