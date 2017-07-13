@@ -1,0 +1,15 @@
+{
+    "root" : "/home/zhuwj/emutool/src",
+    "srvaddr": "//192.168.1.19:9000",
+    "services": {
+            "100001": {
+                "merchantId": "0002000057",
+                "productId": "0000000000",
+                "flow": [
+                    {"trade": "100019", "conf": "/order.json"},
+                    {"trade": "200057", "conf": "/pay.json"}
+                ]
+            }
+    }
+}
+
